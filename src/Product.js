@@ -12,6 +12,7 @@ const Product = ({productId}) => {
     const currentURL = window.location.href.substring(21);
 
     const [product, setProduct] = React.useState(null);
+    const [user, setUser] = React.useState(null);
   
     React.useEffect(() => {
       instance.get(currentURL).then((response) => {
@@ -39,10 +40,14 @@ const Product = ({productId}) => {
 
     function FreezeBid(event) {
         instance
-            .post(`/products/freezebid/${product.id}`, {buyer: localStorage.getItem('userId'), seller: product.seller});
-        
-        alert('The Bid has been frozen, the buyer is User'+product.seller+'. \nGo to Chat and enter their User Id to chat with them');
-        }
+            .post(`/products/freezebid/${product.id}`, {buyer: localStorage.getItem('userId'), seller: product.seller})
+            .then((response) => {
+                setUser(response.data)
+                if (user) {
+                    alert('The Bid has been frozen, the buyer\'s information is: \nName: '+user.name+'. \nEmail: ' + user.email + '\nPhone: ' + user.phone + '\nHostel: ' + user.hostel + '\nGo to Chat and enter their User Id: (' + user.id + ') to chat with them');
+                }
+            });            
+    }
   
     return (
         <div>
